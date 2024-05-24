@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>선생님 리스트</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
+      <!-- 헤더 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+  <style>
+
+    .cardlist {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .teacher-card {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff5eb;
+      cursor: pointer;
+    }
+    .teacher-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      float: left;
+    }
+    .teacher-card h4 {
+      font-weight: bold;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+    <th:block th:replace="~{headerMem :: headerMem}"></th:block>
+<div class="cardlist">
+<br>
+<br>
+<h1 class="mb-4" style="font-weight: bold;">선생님 리스트</h1>
+  <br>
+  <p>◆ 다음으로 같이 공부할 선생님을 선택해 주세요.</p>
+  <br>
+  <!-- 선생님 카드 반복문 시작 -->
+  <div th:each="teacher : ${tealist}" class="teacher-card mb-4">
+   <a th:href="@{'/reser/yoyakuStu?tid=' + ${teacher.tid} + '&amp;tname=' + ${teacher.tname} + '&amp;toidx=' + ${toidx}}" class="text-decoration-none">
+      <div class="row">
+        <div class="col-md-12" style="cursor: pointer;">
+          <img th:src="@{/teacherImages/{idx}/{picture}(idx=${teacher.idx}, picture=${teacher.picture})}" alt="선생님 사진">
+          <div>
+            <h4 th:text="${teacher.tname}" class="text-dark">선생님 닉네임</h4>
+            <p th:text="${teacher.content}" class="text-dark">선생님 설명</p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <!-- 선생님 카드 반복문 종료 -->
+</div>
+<br>
+<br>
+<br>
+</body>
+</html>

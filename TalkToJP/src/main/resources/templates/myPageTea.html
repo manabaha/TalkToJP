@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>마이페이지</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+	crossorigin="anonymous">
+	
+	  <!-- 헤더 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">	
+	
+	<style>
+	  #imageContainer {
+	    width: 500px;
+	    height: 500px;
+	    overflow: hidden;
+	  }
+	  
+	  #imageContainer img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    border-radius: 50%;
+	  }
+	</style>
+	
+</head>
+<body>
+
+
+    <th:block th:replace="~{headerTea :: headerTea}"></th:block>
+
+
+<div style="height: 100px;"></div>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<form id="registrationForm" action="/mydata/updateTeacher" method="post"  enctype="multipart/form-data"  class="form">
+				<div class="row justify-content-center">
+					<h1 style="text-align: center">선생님 정보 조회</h1>
+				</div>
+				<br>
+				<div class="form-group">
+					
+					<label>프로필 사진</label>
+					
+					<div id="imageContainer" class="form-group overflow-hidden mx-auto">
+					<img alt="" th:src="@{/teacherImages/{idx}/{picture}(idx=${teacher.idx}, picture=${teacher.picture})}">
+
+					</div>
+
+						<!-- 사진 변경 -->
+						<input type="file" 
+						   id="new_picture" 
+						   name="new_picture"
+						   class="form-control" style="visibility: hidden;">
+					<p id="pictureInput"></p>
+					
+					<label>이름</label>
+					<input type="text" 
+						   id="name" 
+						   name="name"
+						   class="form-control"
+						   th:value="${member.name}"
+						   placeholder="이름을 적어주세요." required
+						   readonly="readonly">
+					<p id="nameInput"></p>
+				
+					<label>선생님 닉네임</label>
+					<input type="text" 
+						   id="tname" 
+						   name="tname"
+						   class="form-control"
+						   th:value="${teacher.tname}"
+						   placeholder="선생님 닉네임을 적어주세요." required
+						   readonly="readonly">
+					<p id="ticketInput"></p>
+						
+					<label>선생님 자기소개</label>
+					<textarea rows="4px" cols=""
+					id="content"
+					name="content"
+					class="form-control"
+					th:text="${teacher.content}"
+					placeholder="선생님 자기소개를 적어주세요." required
+					readonly="readonly"></textarea>		
+					<p id="contentInput"></p>
+				
+					<label>아이디</label>
+					<input type="text" 
+						   id="id" 
+						   name="id"
+						   th:value="${member.id}"
+						   class="form-control" required
+						   readonly="readonly">
+					<p id="idInput"></p>
+					
+					<label>비밀번호</label>
+					<input type="password" 
+						   id="m_pass" 
+						   name="pass"
+						   th:value="${member.pass}"
+						   class="form-control"
+						   placeholder="비밀번호를 적어주세요." required
+						   readonly="readonly">
+					<p id="passInput"></p>
+					
+					<label>Email</label>
+					<input type="email" 
+						   id="m_email" 
+						   name="email"
+						   th:value="${member.email}"
+						   class="form-control"
+						   placeholder="이메일을 적어주세요." required
+						   readonly="readonly">
+					<p id="emailInput"></p>
+					
+					<label>핸드폰번호</label>
+					<input type="text" 
+						   id="m_hp" 
+						   name="hp"
+						   th:value="${member.hp}"
+						   class="form-control"
+						   placeholder="핸드폰번호를 '-'없이 적어주세요." required
+						   readonly="readonly">
+					<p id="hpInput"></p>
+					
+						   
+						   <button
+							type="button" id="change"
+							class="btn btn-primary btn-block" style="background-color:#ff8d5b; border-color:#ff8d5b; visibility: visible;">회원 정보 수정하기</button>
+							<button
+							type="button" id="update"
+							class="btn btn-primary btn-block" style="background-color:#ff8d5b; border-color:#ff8d5b; visibility: hidden;">수정완료</button>
+							<div id="plusButton">
+							</div>
+				</div>
+				
+			</form>
+			<br>
+			<br>
+			<br>
+		</div>
+	</div>
+	
+</div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<script type="text/javascript">
+
+	//수정하기 버튼
+	$("#change").click(function(){
+	
+	    $("#m_pass").prop('type', 'text').prop('readonly', false);
+	    $("#m_email").prop('readonly', false);
+	    $("#m_hp").prop('readonly', false);
+	    $("#tname").prop('readonly', false);
+	    $("#content").prop('readonly', false);
+	    
+	    $("#change").remove();
+	    //수정하기 버튼 삭제
+	    
+	    //div작아지는것때문에 가짜버튼하나추가
+	    $("#plusButton").append("<button type='button' class='btn btn-primary btn-block' style='visibility: hidden;' >가라임</button>");
+	    
+	    // 수정완료 버튼 보이게
+	    $("#update").css("visibility","visible");
+	    $("#new_picture").css("visibility","visible");
+
+
+});
+
+	$("#update").click(function() {
+	    var tname_length = $("#tname").val().length;
+	    var content_length = $("#content").val().length;
+	    var m_pass_length = $("#m_pass").val().length;
+	    var m_email_length = $("#m_email").val().length;
+	    var m_hp_length = $("#m_hp").val().length;
+	    
+	    if(tname_length === 0 || content_length === 0 || m_pass_length === 0 || m_email_length === 0 || m_hp_length === 0) {
+	        alert("항목을 작성해 주세요.");
+	        return;
+	    }
+
+	    var result = window.confirm("정말 수정하시겠습니까?");
+	    if(result == true){
+	        $("#registrationForm").submit();
+	    } else {
+	        return false;
+	    }
+	});
+
+
+	<!-- 선택된 파일 비동기로 이미지 뿌리기  -->	
+	document.getElementById('new_picture').addEventListener('change', function(event) {
+		  const file = event.target.files[0];
+		  const reader = new FileReader();
+		  
+		  reader.onload = function() {
+		    const imageData = reader.result;
+		    const imageElement = document.createElement('img');
+		    imageElement.src = imageData;
+		    imageElement.style.width = '100%';
+		    imageElement.style.height = '100%';
+		    imageElement.style.objectFit = 'cover'; 
+		    imageElement.style.borderRadius = '50%'; 
+		    
+		    const container = document.getElementById('imageContainer');
+		    // 기존 이미지 삭제
+		    container.innerHTML = '';
+		    container.appendChild(imageElement);
+		  };
+		  
+		  reader.readAsDataURL(file);
+		});
+
+
+
+</script>
+
+
+</body>
+</html>

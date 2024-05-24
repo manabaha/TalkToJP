@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!-- 필수 메타태그 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 부트스트랩 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>마이 페이지</title>
+
+	  <!-- 헤더 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+    
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+      body {
+        background-color: #fff;
+        color: #000;
+      }
+
+      .nav-link {
+        color: #000 !important;
+      }
+
+      .tab-content {
+        margin-top: 20px;
+      }
+
+      .class-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+        height: 100%;
+      }
+
+      .profile-info {
+        display: none;
+      }
+
+      /* 버튼 색상 변경 */
+      .btn-primary {
+        background-color: #ff8d5b;
+        border-color: #ff8d5b;
+      }
+      
+      .btn-primary:hover {
+        background-color: #f47740;
+        border-color: #f47740;
+      }
+      
+      /* '수강권 구매' 버튼 클릭 및 포커스 색상 변경 */
+      .btn-primary:active,
+      .btn-primary:focus {
+        background-color: #ff8d5b;
+        border-color: #ff8d5b;
+      }
+      
+      /* '내 수업' 제목 스타일 수정 */
+      #my-classes-tab {
+        font-size: 2rem; /* 글자 크기를 적당히 크게 조절 */
+        margin: 0 auto; /* 화면 가운데 정렬 */
+        display: block; /* h2를 블록 요소로 변경하여 가운데 정렬을 적용할 수 있도록 함 */
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        font-weight: bold;
+      }
+      
+      /* 추가된 스타일 */
+      .info-text {
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        margin-top: 20px; /* 텍스트 위 여백 추가 */
+      }
+		      
+      
+    </style>
+  </head>
+  <body>
+
+<!-- MemberServiceImpl loginService에서 세션 저장하고 main컨트롤러에서 ticketPage올 때 세션값을 모델에 어트리뷰트함 -->
+<nav th:if="${sessionCheck == null}">
+    <th:block th:replace="~{headerGuest :: headerGuest}"></th:block>
+</nav>
+<nav th:if="${sessionCheck != null}">
+    <th:block th:replace="~{headerMem :: headerMem}"></th:block>
+</nav>
+
+
+
+
+    <!-- 별도로 구현한 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container-fluid justify-content-center">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+        	<h2 class="nav-link active" id="my-classes-tab" data-bs-toggle="tab" role="tab" aria-controls="my-classes" aria-selected="true">수강권 살펴보기</h2>
+        	<br>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="my-classes" role="tabpanel" aria-labelledby="my-classes-tab">
+          <div class="row row-cols-md-2 row-cols-lg-3 row-cols-xl-4" id="class-list">
+            <!-- 클래스 목록은 여기에 동적으로 추가됩니다. -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 부트스트랩 번들 및 팝퍼 스크립트 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+
+     <script>
+    
+      document.addEventListener("DOMContentLoaded", function() {
+        // 클래스 박스 생성
+        function generateClassBoxes() {
+          //데이터
+          var classes = [
+            { bun: 12, month: "월 14만원 대", intro: "일본어 초단기 플랜! 가볍게 회화를 즐겨보고 싶다면~", price: 140000 },
+            { bun: 36, month: "월 13만원 대", intro: "단기 BEST! 꾸준한 연습으로 회화 스킬 상승!", price: 390000 },
+            { bun: 72, month: "월 11만원 대", intro: "일본어 고수가 되기 위한 첫걸음! 회화에서 부터!", price: 660000 },
+            { bun: 144, month: "월 9만원 대", intro: "일본어 네이티브가 되는 날까지, 멈추지 않는다!", price: 1080000 }
+            // 필요한 만큼 더 많은 데이터 추가 가능
+          ];
+
+          var classList = document.getElementById("class-list");
+          classList.innerHTML = "";
+
+          classes.forEach(function(classInfo, index) {
+   
+            var classBox = document.createElement("div");
+            classBox.className = "col mb-4";
+            classBox.innerHTML = `
+              <div class="class-box d-flex flex-column h-100">
+                <div>
+                  <p>◆ 일본어 수강권 ${classInfo.bun}장</p>
+                  <p style="font-size: 30px;  font-weight: bold;">${classInfo.month}</p>
+                  <p>${classInfo.intro}</p>
+                  <p style="font-size: 20px;">${classInfo.price} 원</p>
+                  	
+                </div>
+                <!-- 1:1수업 입장 버튼의 색상 변경 -->
+                <button class="btn btn-primary mt-auto" onclick="buy(${classInfo.bun}, ${classInfo.price})">수강권 구매</button>
+              </div>
+            `;
+            classList.appendChild(classBox);
+          });
+        }
+
+        // 초기에 클래스 박스 생성
+        generateClassBoxes();
+      });
+    </script>
+    
+    <br>
+    <br>
+		<div class="info-text">
+		  <p>Talk To JP에서는 주 3회 수강을 권장드리고 있으나, 구매하신 수강권은 원하시는 일정에 맞춰 언제든지 사용하실 수 있습니다.</p>
+		  <p>매 월 가격은 주 3회 수강을 기준으로 산출된 가격입니다.</p>
+		</div>
+		
+		<script type="text/javascript">
+		
+		function buy(bun, price){
+			var result = window.confirm("정말 구매하시겠습니까?");
+			
+			if(result == true){//확인 버튼 클릭
+				
+				$.ajax({
+					type : "post",
+					async : true,
+					url : "/mydata/ticketBuy",
+					data : {ticket: bun, price: price},
+					dataType : "text",
+					success : function(data){
+						console.log(data)
+						if(data=="미로그인"){
+							window.alert('로그인 후 이용해 주세요.');
+							window.location.href = "/login";
+						}else if(data=="티켓구매성공"){
+							window.alert('수강권이 구매되었습니다.');
+							window.location.href = "/mainMember";
+						}else if(data=="티켓구매실패"){
+							window.alert('수강권 구매에 실패하였습니다.');
+							window.location.href = "/mainMember";
+						}
+						
+						
+					},
+					error : function(){
+						alert("비동기 통신 장애");
+					}
+				});
+				
+			}else{//취소 버튼을 눌렀을때
+				return false;
+			}
+		}
+		
+		</script>
+		
+		
+  </body>
+</html>

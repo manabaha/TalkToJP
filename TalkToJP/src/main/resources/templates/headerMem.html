@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <script src="../assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.122.0">
+    <title>TalkToJP</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
+
+    <!-- 네비게이션 바 파일 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+	<!-- 헤더 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+
+
+
+</head>
+<body>
+<nav th:fragment="headerMem" class="p-3 ttjpheader">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+          <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+        </a>
+
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a th:href="@{/main}" class="navLogo"><img src="/images/headerlogo.png" alt="로고"></a></li>
+          <li><a th:href="@{/topic/topicList}" class="navYoyaku" >수업 예약</a></li>
+          <li><a th:href="@{/ticketPage}" class="navBuy" >수강권 구매</a></li>
+        </ul>
+
+<!--         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"> -->
+<!--           <input type="search" class="form-control form-control-dark text-bg-dark" style="background-color: #fff !important;" value="남은 수강권" aria-label="Search" readonly="readonly"> -->
+<!--         </form> -->
+
+        <div class="text-end">
+          <a th:href="@{/member/logout}"><button type="button" class="btn btn-outline-light me-2">로그아웃</button></a>          
+          <a th:href="@{/member/myPage}"><button type="button" class="btn btn-warning" style="background-color: #ff8d5b !important;">마이페이지</button></a>
+          <a th:href="@{/member/myLessonStu}"><button type="button" class="btn btn-warning" style="background-color: #ff8d5b !important;">내 수업</button></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+   <!-- content -->
+    <div class="content" th:fragment="content">
+        <p>여기는 content 영역입니다.</p>
+    </div>
+</body>
+</html>

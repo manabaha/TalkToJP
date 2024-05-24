@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>마이페이지</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+	crossorigin="anonymous">
+	
+	  <!-- 헤더 스타일 추가 -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">	
+	
+</head>
+<body>
+
+<nav th:if="${sessionAdmin == '1' or sessionAdmin == '0'}">
+    <th:block th:replace="~{headerMem :: headerMem}"></th:block>
+</nav>
+
+<div style="height: 100px;"></div>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<form id="registrationForm" action="/mydata/updateMember" method="post" class="form">
+				<div class="row justify-content-center">
+					<h1 style="text-align: center">나의 회원 정보 조회</h1>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>내 수강권 개수</label>
+					<input type="text" 
+						   id="m_ticket" 
+						   name="ticket"
+						   class="form-control"
+						   th:value="${member.ticket}"
+						   readonly="readonly">
+					<p id="ticketInput"></p>
+							
+					<label>이름</label>
+					<input type="text" 
+						   id="m_name" 
+						   name="name"
+						   class="form-control"
+						   th:value="${member.name}"
+						   placeholder="이름을 적어주세요." required
+						   readonly="readonly">
+					<p id="nameInput"></p>
+				
+					<label>아이디</label>
+					<input type="text" 
+						   id="m_id" 
+						   name="id"
+						   th:value="${member.id}"
+						   class="form-control" required
+						   readonly="readonly">
+					<p id="idInput"></p>
+					
+					<label>비밀번호</label>
+					<input type="password" 
+						   id="m_pass" 
+						   name="pass"
+						   th:value="${member.pass}"
+						   class="form-control"
+						   placeholder="비밀번호를 적어주세요." required
+						   readonly="readonly">
+					<p id="passInput"></p>
+					
+					<label>Email</label>
+					<input type="email" 
+						   id="m_email" 
+						   name="email"
+						   th:value="${member.email}"
+						   class="form-control"
+						   placeholder="이메일을 적어주세요." required
+						   readonly="readonly">
+					<p id="emailInput"></p>
+					
+					<label>핸드폰번호</label>
+					<input type="text" 
+						   id="m_hp" 
+						   name="hp"
+						   th:value="${member.hp}"
+						   class="form-control"
+						   placeholder="핸드폰번호를 '-'없이 적어주세요." required
+						   readonly="readonly">
+					<p id="hpInput"></p>
+					
+						   
+						   <button
+							type="button" id="change"
+							class="btn btn-primary btn-block" style="background-color:#ff8d5b; border-color:#ff8d5b; visibility: visible;">회원 정보 수정하기</button>
+							<button
+							type="button" id="update"
+							class="btn btn-primary btn-block" style="background-color:#ff8d5b; border-color:#ff8d5b; visibility: hidden;">수정완료</button>
+							<div id="plusButton">
+							</div>
+				</div>
+				
+			</form>
+			<p>◆ 내가 선생님이 되고 싶다면?</p>
+			<a th:href="@{|/mydata/joinTea?id=${member.id}|}"   style="text-decoration: none;">선생님으로 등록하기</a>
+			<br>
+			<br>
+			<br>
+		</div>
+	</div>
+	
+</div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<script type="text/javascript">
+
+	//수정하기 버튼
+	$("#change").click(function(){
+	
+	    $("#m_pass").prop('type', 'text').prop('readonly', false);
+	    $("#m_email").prop('readonly', false);
+	    $("#m_hp").prop('readonly', false);
+	    
+	    $("#change").remove();
+	    //수정하기 버튼 삭제
+	    
+	    //div작아지는것때문에 가짜버튼하나추가
+	    $("#plusButton").append("<button type='button' class='btn btn-primary btn-block' style='visibility: hidden;' >가라임</button>");
+	    
+	    $("#update").css("visibility","visible");
+	    // 수정완료 버튼 보이게
+
+});
+
+	//수정완료 버튼과 컨펌창
+	$("#update").click(function() {
+	    var m_pass_length = $("#m_pass").val().length;
+	    var m_email_length = $("#m_email").val().length;
+	    var m_hp_length = $("#m_hp").val().length;
+	    
+	    if(m_pass_length === 0 || m_email_length === 0 || m_hp_length === 0) {
+	        alert("항목을 작성해 주세요.");
+	        return;
+	    }
+	
+	    var result = window.confirm("정말 수정하시겠습니까?");
+	    if(result == true){
+	        $("#registrationForm").submit();
+	        alert("회원정보 수정 완료");
+	    } else {
+	        return false;
+	    }
+});
+
+
+
+</script>
+
+
+</body>
+</html>

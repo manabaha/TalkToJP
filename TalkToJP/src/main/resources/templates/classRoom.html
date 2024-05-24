@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 헤더 스타일 추가 -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+    
+    <title>Class Room</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+		    background-color: #ffffff;
+		    flex-direction: column;
+		    align-items: center;
+		    margin: 0;
+		}
+		
+		.container-wrapper {
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    width: 100%;
+		}
+		
+		.classroom-container {
+		    background-color: #f8f9fa;
+		    border-radius: 15px;
+		    padding: 20px;
+		    width: 80%;
+		    max-width: 1200px;
+		    display: flex;
+		    justify-content: space-between;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    margin-bottom: 20px; /* Ensure space between containers */
+		}
+		
+		.lesson-container {
+			background-color: #f8f9fa;
+		    border-radius: 15px;
+		    padding: 20px;
+		    width: 80%;
+		    max-width: 1200px;
+		    justify-content: space-between;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    margin-bottom: 20px; /* Ensure space between containers */
+		}
+		
+		.lesson-container span {
+		    display: inline-block;
+		    margin: 0 10px;
+		}
+		
+		.carousel-container {
+		    width: 48%;
+		    height: 100%;
+		    overflow: hidden;
+		}
+		
+		.chat-container {
+		    width: 48%;
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		#chat {
+		    overflow-y: auto;
+		    margin-bottom: 20px;
+		    border: 1px solid #ccc;
+		    padding: 10px;
+		    background-color: #fff;
+		    border-radius: 10px;
+		    max-height: 500px;
+		    flex: 1;
+		}
+		
+		.chat-message {
+		    margin: 5px 0;
+		    padding: 10px;
+		    border-radius: 10px;
+		    max-width: 75%;
+		    word-wrap: break-word;
+		}
+		
+		.chat-message.left {
+		    text-align: left;
+		    background-color: #f1f1f1;
+		    margin-right: auto;
+		}
+		
+		.chat-message.right {
+		    text-align: right;
+		    background-color: #ffd8c7;
+		    margin-left: auto;
+		}
+		
+		#messageForm {
+		    display: flex;
+		    justify-content: space-between;
+		    border-radius: 10px;
+		    overflow: hidden;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    margin-top: 20px;
+		    padding: 10px;
+		}
+		
+		#message {
+		    flex: 1;
+		    border: none;
+		    padding: 10px;
+		    border-radius: 0;
+		}
+		
+		.btn-primary {
+		    background-color: #ff8d5b;
+		    border-color: #ff8d5b;
+		    border-radius: 0;
+		}
+		
+		/* 버튼 클릭 및 포커스 색상 변경 */
+		.btn-primary:hover,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #f47740;
+            border-color: #f47740;
+        }
+		
+		.input-group {
+		    border-radius: 10px;
+		}
+
+		/* 채팅 창 스크롤 바 스타일 */
+		#chat::-webkit-scrollbar {
+		    width: 12px;
+		}
+		
+		#chat::-webkit-scrollbar-thumb {
+		    background-color: #ffb493;
+		    border-radius: 10px;
+		}
+		
+		#chat::-webkit-scrollbar-track {
+		    background-color: #f8f9fa;
+		}
+
+
+    </style>
+</head>
+<body>
+    <!-- MemberServiceImpl loginService에서 세션 저장하고 멤버member 컨트롤러에서 myPage올 때 세션값을 모델에 어트리뷰트함 -->
+    <nav th:if="${sessionAdmin == '2'}">
+        <th:block th:replace="~{headerTea :: headerTea}"></th:block>
+    </nav>
+    <!-- 2(선생님)가 아니면 1(회원)이거나 0(관리자)면 멤버 헤더 보여줌-->
+    <nav th:if="${sessionAdmin != '2'}">
+        <th:block th:replace="~{headerMem :: headerMem}"></th:block>
+    </nav>
+    <br>
+    <br>
+    <div class="container-wrapper">
+        <div class="lesson-container">
+            <span th:text="${ttls.lessondate}"></span>
+            <span>토픽 번호: </span>
+            <span th:text="${ttls.topicidx}"></span>    
+            <span></span>
+            <span>토픽 제목: </span>    
+            <span th:text="${ttls.totitle}"></span>        
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span class="lessonMemName">선생님: </span>
+            <span th:text="${ttls.teachername}" class="lessonMemName"></span>
+            <span class="lessonMemName">학생: </span>
+            <span th:text="${ttls.studentname}" class="lessonMemName"></span>
+        </div>
+        <div class="classroom-container">
+            <!-- 캐러셀 -->
+            <div class="carousel-container">
+                <div id="carouselExample" class="carousel slide" style="height: 510px; overflow: hidden;">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture1})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture2})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture3})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture4})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture5})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img th:src="@{/topicImages/{idx}/{picture}(idx=${topic.toidx}, picture=${topic.picture6})}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 510px;" alt="...">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <!-- 채팅 창 -->
+            <div class="chat-container">
+                <ul id="chat" class="list-unstyled"></ul>
+                <form id="messageForm" class="input-group">
+                    <input type="text" id="message" class="form-control" placeholder="채팅을 입력하세요.">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary text-white rounded" id="sendMessageBtn">전송</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div th:if="${sessionAdmin != '2'}">
+			<a th:href="@{/member/myLessonStu}" class="btn btn-primary mt-auto rounded">나가기</a>
+        </div>    
+        <div th:if="${sessionAdmin == '2'}">
+            <a th:href="@{/member/myLessonTea}" class="btn btn-primary mt-auto rounded">나가기</a>
+        </div>    
+        <form action="">
+            <input type="hidden" th:value="${ttls.idx}" id="lidx">
+            <input type="hidden" th:value="${ttls.teacherid}" id="tid">
+            <input type="hidden" th:value="${ttls.studentid}" id="sid">
+            <input type="hidden" th:value="${member.name}" id="username">
+            <input type="hidden" th:value="${member.id}" id="userid">
+        </form>
+    </div>
+
+
+    <!-- Bootstrap JavaScript 파일 및 종속성인 Popper.js와 jQuery 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        var lessonIdx = document.getElementById("lidx").value;
+        var teacherId = document.getElementById("tid").value;
+        var studentId = document.getElementById("sid").value;
+        var username = document.getElementById("username").value;
+        var userid = document.getElementById("userid").value;
+
+        // 페이지 로드 시 이전 채팅 내역 불러오기
+        $.get('/lesson/getMessages?lessonIdx=' + lessonIdx, function(messages) {
+            messages.forEach(function(message) {
+                showMessage(message);
+            });
+        });
+
+        $('#sendMessageBtn').click(function (event) {
+            event.preventDefault();
+            var messageInput = $('#message').val();
+            if (messageInput) {
+                var message = {
+                    lessonIdx: lessonIdx,
+                    teacherId: teacherId,
+                    studentId: studentId,
+                    message: messageInput,
+                    senderName: username, // 메시지 보낸 사람 설정
+                    senderId: userid // 메시지 보낸 사람 설정
+                };
+                $.post('/lesson/sendMessage', message, function(response) {
+                    $('#message').val('');
+                    showMessage(message); // 즉시 내 메시지 표시
+                });
+            }
+        });
+
+        function showMessage(message) {
+            console.log("message.senderId:", message.senderId);
+            console.log("userid:", userid);
+            var messageClass = message.senderId === userid ? 'right' : 'left';
+            var messageElement = '<li class="chat-message ' + messageClass + '"><span class="message-content">' + message.message + '</span></li>';
+            $('#chat').append(messageElement);
+        }
+
+    });
+    </script>
+
+</body>
+</html>

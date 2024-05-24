@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 페이지</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- 헤더 스타일 추가 -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+  <style>
+    body {
+      text-align: center;
+    }
+
+    .center-container {
+      position: relative;
+      height: 100vh;
+    }
+
+    .center-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .login-form {
+      width: 350px;
+      padding: 30px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #fff7ef;
+      margin-top: 20px; /* 수정된 부분 */
+    }
+
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff8d5b;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .login-form button:hover {
+      background-color: #ff7b3d;
+    }
+
+    .login-form .forgot-password,
+    .login-form .register {
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="center-container">
+    <div class="center-content">
+      <a th:href="@{/main}"><img src="/images/logo.png" alt="로고"></a>
+      <div class="login-form">
+        <h2>로그인</h2>
+	<form id="loginForm" action="/member/logingo" method="post" class="form">
+	    <input type="text" name="id" id="id" placeholder="아이디" required>
+	    <input type="password" name="pass" id="pass" placeholder="비밀번호" required>
+	    <button type="submit" class="button">로그인</button>
+	</form>
+        <div class="register">
+          계정이 없으신가요? <a th:href="@{/member/joinForm}" th:text="회원가입">JOIN</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+
+$("#loginForm").submit(function(event) {
+    event.preventDefault(); // 기본 제출 동작 방지
+
+    $.ajax({
+        url: "/member/logingo",
+        type: "post",
+        async: true,
+        data: {
+            id: $("#id").val(),
+            pass: $("#pass").val()
+        },
+        dataType: "text",
+
+        success: function(data, textStatus) {
+            if (data == '로그인실패') {
+                alert('아이디 또는 비밀번호가 틀립니다.');
+            } else {
+                location.href = "/mainMember";
+            }
+        }
+    });
+});
+</script>
+
+</html>

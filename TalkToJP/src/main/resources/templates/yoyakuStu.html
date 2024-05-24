@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선생님 일정 예약</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+
+    <style>
+        .block {
+            width: 80%;
+            height: 90%;
+            cursor: default;
+            border-radius: 10px;
+        }
+        .block.selected {
+            background-color: #f47740;
+            cursor: pointer;
+        }
+        th, td {
+            text-align: center;
+            padding: 0;
+            white-space: nowrap;
+        }
+        #saveBtn {
+            width: 200px;
+            background-color: #ff8d5b;
+            border-color: #ff8d5b;
+            margin: 20px auto 0;
+            display: block;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border-color: #dee2e6 !important;
+        }
+        tbody, td, tfoot, th, thead, tr {
+            border-color: #dee2e6;
+            border-width: 1px;
+        }
+        .time-column {
+            width: 70px;
+            padding: 0;
+        }
+        .date-column {
+            width: 100px;
+            padding: 0;
+        }
+        .block-container {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        .time-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            white-space: nowrap;
+        }
+        .time-column {
+            vertical-align: middle !important;
+        }
+        .block-text {
+            color: white;
+            text-align: center;
+            line-height: 45px;
+        }
+    </style>
+</head>
+<body>
+    <th:block th:replace="~{headerMem :: headerMem}"></th:block>
+    <br><br>
+    <div class="container">
+        <h2 class="text-center mb-4" th:text="${tname + ' 선생님의 수업 일정'}" style="font-weight: bold;"></h2>
+        <p>◆ 선생님의 수업 가능 일정이에요. 원하는 날짜와 시간을 선택하고 수업을 예약하세요.</p>
+        <p>◆ 수업 예약 시, 수강권 1장이 소모됩니다.</p>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="time-column">시작시간</th>
+                            <script>
+                                var today = new Date();
+                                today.setDate(today.getDate() + 1);
+                                var dateFormat = new Intl.DateTimeFormat('ko-KR', { month: '2-digit', day: '2-digit', weekday: 'short' });
+                                var cal = new Date(today);
+                                for (var i = 0; i < 7; i++) {
+                                    var date = dateFormat.format(cal);
+                                    document.write('<th class="date-column">' + date + '</th>');
+                                    cal.setDate(cal.getDate() + 1);
+                                }
+                            </script>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <script>
+                            var today = new Date();
+                            today.setDate(today.getDate() + 1);
+                            var dateFormat = new Intl.DateTimeFormat('ko-KR', { month: '2-digit', day: '2-digit', weekday: 'short' });
+
+                            for (var j = 0; j < 48; j++) {
+                                var hour = Math.floor(j / 2);
+                                var minute = (j % 2) * 30;
+                                var time = hour.toString().padStart(2, '0') + ':' + minute.toString().padStart(2, '0');
+                                document.write('<tr><td class="time-column">' + time + '</td>');
+
+                                var timeCal = new Date(today);
+                                for (var i = 0; i < 7; i++) {
+                                    var date = dateFormat.format(timeCal);
+                                    var id = date.replace(/\s/g, "").replace(':', '');
+                                    document.write('<td class="date-column"><div class="block-container"><div class="block" id="' + id + '_' + time.replace(':', '') + '"></div></div></td>');
+                                    timeCal.setDate(timeCal.getDate() + 1);
+                                }
+                                document.write('</tr>');
+                            }
+                        </script>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br><br><br>
+        <button id="saveBtn" class="btn btn-primary" onclick="saveReservation()">수업 예약</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script th:inline="javascript">
+        var tid = /*[[${tid}]]*/ '';
+        var toidx = /*[[${toidx}]]*/ '';
+        var tname = /*[[${tname}]]*/ '';
+    </script>
+
+    <script>
+        var possibleDates = [];
+        var alreadyDates = [];
+
+        $(document).ready(function() {
+            $('.block').addClass('disabled').removeClass('selected reserved').css('background-color', '#dddddd');
+            alreadyReser();
+            fetchReservationInfo();
+        });
+
+
+        function alreadyReser() {
+            $.ajax({
+                type: "GET",
+                url: "/reser/alreadyReser",
+                data: { tid: tid },
+                dataType: 'json',
+                success: function(response) {
+                    alreadyDates = response;
+                    updateBlocks2();
+                },
+                error: function(xhr, status, error) {
+                    console.error("에러 발생: ", error);
+                }
+            });
+        }
+
+        function fetchReservationInfo() {
+            $.ajax({
+                type: "GET",
+                url: "/reser/searchTeaScheTostu",
+                data: { tid: tid },
+                dataType: 'json',
+                success: function(response) {
+                    possibleDates = response;
+                    updateBlocks();
+                },
+                error: function(xhr, status, error) {
+                    console.error("에러 발생: ", error);
+                }
+            });
+        }
+
+        function updateBlocks() {
+            possibleDates.forEach(function(date) {
+                var blockIds = date.split(",");
+                blockIds.forEach(function(blockId) {
+                    var escapedId = escapeSelector(blockId);
+                    var blockElement = $('#' + escapedId);
+
+                    if (blockElement.length && !blockElement.hasClass('reserved')) {  // 이미 예약된 블럭 확인
+                        blockElement
+                            .removeClass('disabled')
+                            .css('background-color', '#ffb595')
+                            .off('click')
+                            .on('click', function() {
+                                $(this).toggleClass('selected');
+                                if ($(this).hasClass('selected')) {
+                                    $(this).css('background-color', '#f47740');
+                                } else {
+                                    $(this).css('background-color', '#ffb595');
+                                }
+                            });
+                    }
+                });
+            });
+        }
+
+
+        function updateBlocks2() {
+            alreadyDates.forEach(function(date) {
+                var blockIds = date.split(",");
+                blockIds.forEach(function(blockId) {
+                    var escapedId = escapeSelector(blockId);
+                    var blockElement = $('#' + escapedId);
+
+                    if (blockElement.length) {
+                        blockElement
+                        	.attr("style", "background-color: #7084ff !important;")
+                            .prop('disabled', true)  // 예약된 블럭은 클릭 불가능하게 설정
+                            .html('<span class="block-text">마감</span>')
+                            .addClass('reserved')  // 예약된 블럭에 클래스 추가
+                            .off('click');
+                    }
+                });
+            });
+        }
+
+        function escapeSelector(selector) {
+            return selector.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
+        }
+
+     	// 수업 예약 저장
+        function saveReservation() {
+        	
+        	 var selectedBlocks = $('.selected').map(function() {
+                 return this.id;
+             }).get();
+
+             if(selectedBlocks.length === 0){
+         		alert("일정을 선택하지 않았습니다.");
+         		return;
+         	 }
+        	
+    		var result = window.confirm("수업을 예약하시겠습니까?");
+    		
+    		if(result == true){//확인 버튼 클릭
+        	
+            console.log(selectedBlocks); // 확인용
+
+            $.ajax({
+                type: "POST",
+                url: "/reser/saveLesson",
+                dataType : "text",
+                data: {
+                    tid: tid,
+                    tname: tname,
+                    toidx: toidx,
+                    selectDate: selectedBlocks
+                },
+                success: function(data) {
+                	console.log(data)
+                	if(data=="예약성공"){
+                		alert("수업이 예약되었습니다.");
+                        location.href = "/mainMember";
+    				}else if(data=="티켓차감실패"){
+    					window.alert('수강권이 부족합니다.');
+    					window.location.href = "/main";
+    				}else if(data=="티켓차감성공"){
+    					window.alert('데이터 베이스 오류');
+    					window.location.href = "/main";
+    				}
+                	                
+                },
+                error: function(xhr, status, error) {
+                    console.error("에러 발생: ", error);
+                }
+            });
+            
+        }else{//취소 버튼을 눌렀을때
+    		return false;
+    	}
+          
+        	
+    		
+        }
+    </script>
+</body>
+</html>

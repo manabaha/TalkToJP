@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+
+		.ttjpheader,
+		.btn.btn-outline-light.me-2,
+		.navLogo {
+		    color: #000 !important; /* 텍스트 색상을 검정색으로 설정 */
+		    background-color: #fff !important; /* 배경 색상을 흰색으로 설정 */
+		    text-decoration: none;
+		}
+
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+		.navYoyaku,
+		.navBuy {
+	    font-weight: bold; /* 텍스트를 굵게 설정 */
+	    color: #ff8d5b; /* 텍스트 색상을 #FA7034로 설정 */
+	    margin-left: 30px; /* 왼쪽 마진을 10px로 설정 */
+	    background-color: #fff !important; /* 배경 색상을 흰색으로 설정 */
+	    text-decoration: none;
+	    line-height: 33px; /* 텍스트의 수직 정렬을 위해 높이와 동일한 값을 지정 */
+		}
+
+
+	.btn-warning {
+	    background-color: #ff8d5b; /* 배경 색상을 #FA7034로 설정 */
+	    border-color: #ff8d5b; /* 테두리 색상을 #FA7034로 설정 */
+	}
+
+	.navYoyaku:hover,
+	.navBuy:hover {
+	    color: #FA7034; /* 마우스를 올렸을 때의 텍스트 색상을 #FA7034로 설정 */
+	}
+	
