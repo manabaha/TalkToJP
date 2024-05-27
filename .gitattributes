@@ -1,8 +1,6 @@
 *.css linguist-detectable=false
 *.scss linguist-detectable=false
 
-*.html linguist-language=HTML
-*.html linguist-vendored=false
+* linguist-language=Java
 
-*.html linguist-language=JavaScript
-*.html linguist-vendored=false
+*.html linguist-language=HTML
