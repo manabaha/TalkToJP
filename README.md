@@ -34,33 +34,47 @@ TalkToJP는 1:1 온라인 수업 플랫폼으로, 선생님과 학생이 자유�
 __1. lombok plugin 설치__
 
    1)　플러그인 다운로드
+
    
-    https://projectlombok.org/download
-   
+https://projectlombok.org/download
+
 
    2)　내려받은 jar파일을 더블클릭하여 실행하거나, 명령 프롬프르(CMD)에 다음과 같이 입력합니다.
-    ```sh
+```
     java -jar lombok.jar
-    ```
+```
+   
+2-1)　만약, 명령 프롬프트를 사용하는 경우, cd명령어를 사용해 파일이 저장된 경로로 이동한 뒤 입력해야 합니다.
+
+
+```
+    cd C:\Users\사용자이름\Desktop
+```
+
+
+예시) 사용자이름이 605이고, 파일을 바탕화면에 저장한 경우
+![cmd](images/cm.png)
+
+
+
    3)　[Specify location]을 클릭해 롬복 플러그인을 사용할 IDE가 설치된 경로를 선택하고, [Install / Update]를 클릭해 롬복 플러그인을 설치합니다.
+   ![롬복](images/lb.png)
+ 
 
    4)　build.gradle에 의존성을 추가합니다.
-
-
-    ```sh
+```
     dependencies {
     compileOnly 'org.projectlombok:lombok' //추가
     annotationProcessor 'org.projectlombok:lombok' // 추가
     }
-    ```
-    
+```
 __2. 파일 업로드 후 새로고침 되도록 설정__
 
    
    ![설정](images/ec01.png)
 
    
-     파일 업로드 후 프로젝트 내부에 파일이 저장되는 경우, Eclipse에서 파일 시스템 변경을 감지하고 새로고침하여 변경 사항이 즉시 반영됩니다.
+파일 업로드 후 프로젝트 내부에 파일이 저장되는 경우, Eclipse에서 파일 시스템 변경을 감지하고 새로고침하여 변경 사항이 즉시 반영됩니다.
 
 ## 4. 상세 설명
 
