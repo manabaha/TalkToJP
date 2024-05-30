@@ -200,18 +200,13 @@
                             .css('background-color', '#ffb595')
                             .off('click')
                             .on('click', function() {
-                                $(this).toggleClass('selected');
-                                if ($(this).hasClass('selected')) {
-                                    $(this).css('background-color', '#f47740');
-                                } else {
-                                    $(this).css('background-color', '#ffb595');
-                                }
+                                $('.block.selected').removeClass('selected').css('background-color', '#ffb595'); // 이전에 선택된 블럭 해제
+                                $(this).addClass('selected').css('background-color', '#f47740'); // 현재 선택된 블럭 설정
                             });
                     }
                 });
             });
         }
-
 
         function updateBlocks2() {
             alreadyDates.forEach(function(date) {
@@ -222,7 +217,7 @@
 
                     if (blockElement.length) {
                         blockElement
-                        	.attr("style", "background-color: #7084ff !important;")
+                            .attr("style", "background-color: #7084ff !important;")
                             .prop('disabled', true)  // 예약된 블럭은 클릭 불가능하게 설정
                             .html('<span class="block-text">마감</span>')
                             .addClass('reserved')  // 예약된 블럭에 클래스 추가
